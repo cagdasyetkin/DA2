@@ -210,11 +210,213 @@ QUA_0.1_matrix
 #16.	Add 1 as the last digit in your seed, example if your group number is 106 your seed should be set as 1061 and repeat 12-15.
 # Have you answers changed? (Non mandatory for part-time students!)
 
+set.seed(311)
+amazon5$id_rand <- runif(nrow(amazon5), min = 0, max = 1)
 
+# sorting by id_rand
+amazon5 <- amazon5[order(amazon5$id_rand),]
+
+# selecting the first hundred observation and computing mean and standard deviation
+a <- 1
+b <- 100
+sample_size <- b-a+1
+sd_dev <- amazon5[a:b, sd(price)]
+mean <- amazon5[a:b, mean(price)]
+CI_left <- mean-qnorm(0.975)*sd_dev/sqrt(sample_size)
+CI_right <- mean+qnorm(0.975)*sd_dev/sqrt(sample_size)
+
+Q12 <- c(sample_size, mean, sd_dev, CI_left, CI_right)
+
+Q12.2 <- quantile(amazon5[a:b,]$price, probs = seq(0,1,0.25))
+Q12.3 <- quantile(amazon5[a:b,]$price, probs = seq(0,1,0.1))
+
+a <- 1
+b <- 200
+sample_size <- b-a+1
+sd_dev <- amazon5[a:b, sd(price)]
+mean <- amazon5[a:b, mean(price)]
+CI_left <- mean-qnorm(0.975)*sd_dev/sqrt(sample_size)
+CI_right <- mean+qnorm(0.975)*sd_dev/sqrt(sample_size)
+
+Q13 <- c(sample_size, mean, sd_dev, CI_left, CI_right)
+
+Q13.2 <- quantile(amazon5[a:b,]$price, probs = seq(0,1,0.25))
+Q13.3 <- quantile(amazon5[a:b,]$price, probs = seq(0,1,0.1))
+
+a <- 1
+b <- 300
+sample_size <- b-a+1
+sd_dev <- amazon5[a:b, sd(price)]
+mean <- amazon5[a:b, mean(price)]
+CI_left <- mean-qnorm(0.975)*sd_dev/sqrt(sample_size)
+CI_right <- mean+qnorm(0.975)*sd_dev/sqrt(sample_size)
+
+Q14 <- c(sample_size, mean, sd_dev, CI_left, CI_right)
+
+Q14.2 <- quantile(amazon5[a:b,]$price, probs = seq(0,1,0.25))
+Q14.3 <- quantile(amazon5[a:b,]$price, probs = seq(0,1,0.1))
+
+a <- 1
+b <- 1000
+sample_size <- b-a+1
+sd_dev <- amazon5[a:b, sd(price)]
+mean <- amazon5[a:b, mean(price)]
+CI_left <- mean-qnorm(0.975)*sd_dev/sqrt(sample_size)
+CI_right <- mean+qnorm(0.975)*sd_dev/sqrt(sample_size)
+
+Q15 <- c(sample_size, mean, sd_dev, CI_left, CI_right)
+
+CI_matrix <- matrix(c(Q12, Q13, Q14, Q15), nrow = 4, byrow = TRUE, dimnames = list(c("Q12", "Q13", "Q14", "Q15"), c("sample size", "sample mean", "sample st dev", "interval_left", "interval_right")))
+CI_matrix
+
+Q15.2 <- quantile(amazon5[a:b,]$price, probs = seq(0,1,0.25))
+Q15.3 <- quantile(amazon5[a:b,]$price, probs = seq(0,1,0.1))
+
+QUA_0.25_matrix <- matrix(c(Q12.2, Q13.2, Q14.2, Q15.2), nrow = 4, byrow = TRUE, dimnames = list(c("Q12", "Q13", "Q14", "Q15"), c("0%", "25%", "50%", "75%", "100%")))
+QUA_0.25_matrix
+
+QUA_0.1_matrix <- matrix(c(Q12.3, Q13.3, Q14.3, Q15.3), nrow = 4, byrow = TRUE, dimnames = list(c("Q12", "Q13", "Q14", "Q15"), c("0%", "10%", "20%", "30%", "40%", "50%", "60%", "70%", "80%", "90%", "100%")))
+QUA_0.1_matrix
 
 #17.	In your opinion how would your answers in points 12-15 change, if instead of using 95 percent (CI) you use a 90 or 99 percent (CI)?
 
+#90% CI:
+set.seed(31)
+amazon5$id_rand <- runif(nrow(amazon5), min = 0, max = 1)
 
+# sorting by id_rand
+amazon5 <- amazon5[order(amazon5$id_rand),]
+
+# selecting the first hundred observation and computing mean and standard deviation
+a <- 1
+b <- 100
+sample_size <- b-a+1
+sd_dev <- amazon5[a:b, sd(price)]
+mean <- amazon5[a:b, mean(price)]
+CI_left <- mean-qnorm(0.95)*sd_dev/sqrt(sample_size)
+CI_right <- mean+qnorm(0.95)*sd_dev/sqrt(sample_size)
+
+Q12 <- c(sample_size, mean, sd_dev, CI_left, CI_right)
+
+Q12.2 <- quantile(amazon5[a:b,]$price, probs = seq(0,1,0.25))
+Q12.3 <- quantile(amazon5[a:b,]$price, probs = seq(0,1,0.1))
+
+a <- 1
+b <- 200
+sample_size <- b-a+1
+sd_dev <- amazon5[a:b, sd(price)]
+mean <- amazon5[a:b, mean(price)]
+CI_left <- mean-qnorm(0.95)*sd_dev/sqrt(sample_size)
+CI_right <- mean+qnorm(0.95)*sd_dev/sqrt(sample_size)
+
+Q13 <- c(sample_size, mean, sd_dev, CI_left, CI_right)
+
+Q13.2 <- quantile(amazon5[a:b,]$price, probs = seq(0,1,0.25))
+Q13.3 <- quantile(amazon5[a:b,]$price, probs = seq(0,1,0.1))
+
+a <- 1
+b <- 300
+sample_size <- b-a+1
+sd_dev <- amazon5[a:b, sd(price)]
+mean <- amazon5[a:b, mean(price)]
+CI_left <- mean-qnorm(0.95)*sd_dev/sqrt(sample_size)
+CI_right <- mean+qnorm(0.95)*sd_dev/sqrt(sample_size)
+
+Q14 <- c(sample_size, mean, sd_dev, CI_left, CI_right)
+
+Q14.2 <- quantile(amazon5[a:b,]$price, probs = seq(0,1,0.25))
+Q14.3 <- quantile(amazon5[a:b,]$price, probs = seq(0,1,0.1))
+
+a <- 1
+b <- 1000
+sample_size <- b-a+1
+sd_dev <- amazon5[a:b, sd(price)]
+mean <- amazon5[a:b, mean(price)]
+CI_left <- mean-qnorm(0.95)*sd_dev/sqrt(sample_size)
+CI_right <- mean+qnorm(0.95)*sd_dev/sqrt(sample_size)
+
+Q15 <- c(sample_size, mean, sd_dev, CI_left, CI_right)
+
+CI_matrix <- matrix(c(Q12, Q13, Q14, Q15), nrow = 4, byrow = TRUE, dimnames = list(c("Q12", "Q13", "Q14", "Q15"), c("sample size", "sample mean", "sample st dev", "interval_left", "interval_right")))
+CI_matrix
+
+Q15.2 <- quantile(amazon5[a:b,]$price, probs = seq(0,1,0.25))
+Q15.3 <- quantile(amazon5[a:b,]$price, probs = seq(0,1,0.1))
+
+QUA_0.25_matrix <- matrix(c(Q12.2, Q13.2, Q14.2, Q15.2), nrow = 4, byrow = TRUE, dimnames = list(c("Q12", "Q13", "Q14", "Q15"), c("0%", "25%", "50%", "75%", "100%")))
+QUA_0.25_matrix
+
+QUA_0.1_matrix <- matrix(c(Q12.3, Q13.3, Q14.3, Q15.3), nrow = 4, byrow = TRUE, dimnames = list(c("Q12", "Q13", "Q14", "Q15"), c("0%", "10%", "20%", "30%", "40%", "50%", "60%", "70%", "80%", "90%", "100%")))
+QUA_0.1_matrix
+
+#99% CI:
+set.seed(31)
+amazon5$id_rand <- runif(nrow(amazon5), min = 0, max = 1)
+
+# sorting by id_rand
+amazon5 <- amazon5[order(amazon5$id_rand),]
+
+# selecting the first hundred observation and computing mean and standard deviation
+a <- 1
+b <- 100
+sample_size <- b-a+1
+sd_dev <- amazon5[a:b, sd(price)]
+mean <- amazon5[a:b, mean(price)]
+CI_left <- mean-qnorm(0.995)*sd_dev/sqrt(sample_size)
+CI_right <- mean+qnorm(0.995)*sd_dev/sqrt(sample_size)
+
+Q12 <- c(sample_size, mean, sd_dev, CI_left, CI_right)
+
+Q12.2 <- quantile(amazon5[a:b,]$price, probs = seq(0,1,0.25))
+Q12.3 <- quantile(amazon5[a:b,]$price, probs = seq(0,1,0.1))
+
+a <- 1
+b <- 200
+sample_size <- b-a+1
+sd_dev <- amazon5[a:b, sd(price)]
+mean <- amazon5[a:b, mean(price)]
+CI_left <- mean-qnorm(0.995)*sd_dev/sqrt(sample_size)
+CI_right <- mean+qnorm(0.995)*sd_dev/sqrt(sample_size)
+
+Q13 <- c(sample_size, mean, sd_dev, CI_left, CI_right)
+
+Q13.2 <- quantile(amazon5[a:b,]$price, probs = seq(0,1,0.25))
+Q13.3 <- quantile(amazon5[a:b,]$price, probs = seq(0,1,0.1))
+
+a <- 1
+b <- 300
+sample_size <- b-a+1
+sd_dev <- amazon5[a:b, sd(price)]
+mean <- amazon5[a:b, mean(price)]
+CI_left <- mean-qnorm(0.995)*sd_dev/sqrt(sample_size)
+CI_right <- mean+qnorm(0.995)*sd_dev/sqrt(sample_size)
+
+Q14 <- c(sample_size, mean, sd_dev, CI_left, CI_right)
+
+Q14.2 <- quantile(amazon5[a:b,]$price, probs = seq(0,1,0.25))
+Q14.3 <- quantile(amazon5[a:b,]$price, probs = seq(0,1,0.1))
+
+a <- 1
+b <- 1000
+sample_size <- b-a+1
+sd_dev <- amazon5[a:b, sd(price)]
+mean <- amazon5[a:b, mean(price)]
+CI_left <- mean-qnorm(0.995)*sd_dev/sqrt(sample_size)
+CI_right <- mean+qnorm(0.995)*sd_dev/sqrt(sample_size)
+
+Q15 <- c(sample_size, mean, sd_dev, CI_left, CI_right)
+
+CI_matrix <- matrix(c(Q12, Q13, Q14, Q15), nrow = 4, byrow = TRUE, dimnames = list(c("Q12", "Q13", "Q14", "Q15"), c("sample size", "sample mean", "sample st dev", "interval_left", "interval_right")))
+CI_matrix
+
+Q15.2 <- quantile(amazon5[a:b,]$price, probs = seq(0,1,0.25))
+Q15.3 <- quantile(amazon5[a:b,]$price, probs = seq(0,1,0.1))
+
+QUA_0.25_matrix <- matrix(c(Q12.2, Q13.2, Q14.2, Q15.2), nrow = 4, byrow = TRUE, dimnames = list(c("Q12", "Q13", "Q14", "Q15"), c("0%", "25%", "50%", "75%", "100%")))
+QUA_0.25_matrix
+
+QUA_0.1_matrix <- matrix(c(Q12.3, Q13.3, Q14.3, Q15.3), nrow = 4, byrow = TRUE, dimnames = list(c("Q12", "Q13", "Q14", "Q15"), c("0%", "10%", "20%", "30%", "40%", "50%", "60%", "70%", "80%", "90%", "100%")))
+QUA_0.1_matrix
 
 #18.	Many times in Data Analysis we need to generate new variables from the existing dataset as well as transform the existing ones.
 # Create a new variable which takes on the number of times each date (“date” variable) is found in the dataset. Call this variable
@@ -222,3 +424,12 @@ QUA_0.1_matrix
 # normalization (times_date-min(times_date)/max(times_date)-min(times_date)), standardization (times_date-mean(times_date)/sd(times_date))
 # and logarithmic (log(times_date)). What can you say about these transformations?
 
+amazon5[,times_date:=.N,by=date]
+amazon5_norm<-amazon5[,.(normalization=times_date-min(times_date)/max(times_date)-min(times_date))]
+ggplot(amazon5_norm,aes(normalization))+geom_histogram()
+
+amazon5_standard<-amazon5[,.(standardization=times_date-mean(times_date)/sd(times_date))]
+ggplot(amazon5_standard,aes(standardization))+geom_histogram()
+
+amazon5_log<-amazon5[,.(log=log(times_date))]
+ggplot(amazon5_log,aes(log))+geom_histogram()
