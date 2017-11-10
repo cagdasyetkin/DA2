@@ -13,16 +13,21 @@ amazon <- read.csv("amazon_compare.csv")
 # 2.	Do steps 2-3 exactly as you did in PS1. 
 # The random number generator should be from the same distribution as in PS1. 
 # What type of sampling is this?
-sum(is.na(amazon$price))
-sum(is.na(amazon$price_online))
+sum(is.na(amazon$price)) # number of NAs in price variable
+sum(is.na(amazon$price_online)) # number of NAs in price_online variable
 
+# Dropping obersvations where price or price_online variables or both are missing
 amazon2 <- amazon[which(!is.na(amazon$price) & !is.na(amazon$price_online)),]
 
+# Dropping observations that are larger than the 99-percentile of price and price_online variable
 amazon3 <- amazon2[which(amazon2$price <= quantile(amazon2$price, prob = 0.99) & 
                            amazon2$price_online <= quantile(amazon2$price_online, prob = 0.99)),]
 
+# Createing a random number generator from a normal distribution setting the seed equal to our group number 31
+#▼ and calling it id_rand
 set.seed(31)
 amazon3$id_rand <- rnorm(nrow(amazon3), mean = 0, sd = 1)
+# Sorting the variable and selecting the first 1000 observations
 amazon4 <- amazon3[order(amazon3$id_rand, decreasing = FALSE),]
 amazon4 <- amazon4[1:1000,]
 #This is simple random samlping.
@@ -44,7 +49,7 @@ quantile(amazon3$price_online, probs = seq(from = 0, to = 1, by = 0.1))
 # H0 = means are the same
 # Ha = means are different, they are not equal
 
-#t.test(amazon3$price == amazon3$price_online, alternative = c('two.sided'))
+#t.test(amazon3$price == amazon3$price_online, alternative = c('two.sided')) # code provided by Arieda
 t.test(amazon3$price, amazon3$price_online)
 # p value = 0.4512 > 0.05. So we fail to reject the null hypothesis.
 
@@ -57,17 +62,20 @@ y <- mean(amazon3$price)
 t.test(amazon3$price_online, mu=y) # gives p value > 0.05: the means are not different. Fail to reject the Null
 
 # Question 6.	Use once again the original dataset and drop observations 
-# for that are above the 95 percentile of the price variable.
+# for that are above the 95 percentile of the price variable. Make summary statistics for the price variable
+# (mean, standard deviations, quartiles, percenti-les).
 
 amazon5 <- amazon[which(amazon$price <= quantile(amazon$price, prob = 0.95)),]
 mean(amazon5$price)
 sd(amazon5$price)
 sd(amazon5$price)^2
+quantile(amazon5$price, probs = c(0, 0.25, 0.5, 0.75, 1))
+quantile(amazon5$price, probs = seq(from = 0, to = 1, by = 0.1))
 
 #7.	Generate a dummy variable taking value one if price_online is missing and zero otherwise. 
 # Call this variable missing_online. 
 # Make histograms and boxplots of price and price_amazon for each value of this indicator variable. 
-# What can you say with respect to these conditional distribu-tions?
+# What can you say with respect to these conditional distributions?
 
 amazon5$missing_online <- ifelse(is.na(amazon5$price_online), 1, 0)
 amazon5$missing_online <- factor(amazon5$missing_online)
@@ -82,13 +90,24 @@ ggplot(amazon5, aes(missing_online, price)) + geom_boxplot() +
 ggplot(amazon5, aes(missing_online, price_amazon)) + geom_boxplot() +
   labs(title = "Box-plot of price_amazon variable", subtitle = "through missing_online binary variable", x = "Missing_Online")
 
+# Dropping the observations above the 95 percentile of price_amazon variable.
+amazon5_1 <- amazon5[which(amazon5$price_amazon <= quantile(amazon5$price_amazon, prob = 0.95)),]
 
+ggplot(amazon5_1, aes(price_amazon)) + geom_histogram() + facet_wrap(~missing_online) +
+  labs(title = "Histogram of price_amazon variable", subtitle = "through missing_online binary variable", x = "price_amazon variable")
+ggplot(amazon5_1, aes(missing_online, price_amazon)) + geom_boxplot() +
+  labs(title = "Box-plot of price_amazon variable", subtitle = "through missing_online binary variable", x = "Missing_Online")
 
 #8. Compare the means of the variables price and price_amazon variables across the two groups of the missing_online.
 
 amazon5 <- data.table(amazon5) # creating a data.table object
 amazon5[, lapply(.SD, mean), by = missing_online, .SDcols = c("price", "price_amazon")] # computing the means of
 # price and price_amazon grouped by missing_online (dummy variable with 0s and 1s)
+
+# Just as an experiment, I checked what would happen if I investigated the means after dropping the observations
+# above the 95 percentile of price_amazon variable.
+amazon5_1 <- data.table(amazon5_1) # creating a data.table object
+amazon5_1[, lapply(.SD, mean), by = missing_online, .SDcols = c("price", "price_amazon")]
 
 #9.	Compare the means of the variables price and  price_amazon and for each of the different retailers (or good categories).
 # For which retailers (or good categories) you see no differences in the means of price and price_amazon?
@@ -110,15 +129,43 @@ amazon5[, lapply(.SD, mean), by = list(category, retailer_s), .SDcols = c("price
 # there are 1310 observations where online price is missing, loading those observations to amazon6
 amazon6 <- amazon[is.na(amazon$price_online),]
 amazon6 <- data.table(amazon6) # creating a data.table object
-amazon6[, lapply(.SD, mean), by = category, .SDcols = c("price", "price_amazon")]
-amazon6[, lapply(.SD, mean), by = retailer_s, .SDcols = c("price", "price_amazon")]
-amazon6[, lapply(.SD, mean), by = list(category, retailer_s), .SDcols = c("price", "price_amazon")]
 
-# dropping the observations above the 95 percentile and loading the rest amazon7
+# computing the number of observation grouped by category and retailer among the 1310 observations
+amazon6[,.N,by = list(category, retailer_s)]
+# computing the number of observation grouped by category and retailer in the original data set
+amazon <- data.table(amazon)
+amazon[,.N,by = list(category, retailer_s)]
+# proportion of missing variables
+amazon6[,.N,by = list(category, retailer_s)] / amazon[,.N,by = list(category, retailer_s)] * 100
+
+# computing the number of observation grouped by category among the 1310 observations
+amazon6[,.N,by = category]
+# computing the number of observation grouped by category in the original data set
+amazon[,.N,by = category]
+# proportion of missing variables
+amazon6[,.N,by = category] / amazon[,.N,by = category] * 100
+
+# summary statistics of observations where price_online was not missing
+amazon2 <- data.table(amazon2)
+#amazon2[, lapply(.SD, mean), by = category, .SDcols = c("price", "price_amazon")]
+#amazon2[, lapply(.SD, mean), by = retailer_s, .SDcols = c("price", "price_amazon")]
+amazon2[, lapply(.SD, mean), by = list(category, retailer_s), .SDcols = c("price", "price_amazon")]
+#dropping the obs above 95 percentile of price variable and doing summary statistics
+amazon2_2 <- amazon2[which(amazon2$price <= quantile(amazon2$price, prob = 0.95)),]
+amazon2_2 <- data.table(amazon2_2)
+#amazon2_2[, lapply(.SD, mean), by = category, .SDcols = c("price", "price_amazon")]
+#amazon2_2[, lapply(.SD, mean), by = retailer_s, .SDcols = c("price", "price_amazon")]
+amazon2_2[, lapply(.SD, mean), by = list(category, retailer_s), .SDcols = c("price", "price_amazon")]
+
+# summary statistics of observations where price_online was missing
+# amazon6[, lapply(.SD, mean), by = category, .SDcols = c("price", "price_amazon")]
+# amazon6[, lapply(.SD, mean), by = retailer_s, .SDcols = c("price", "price_amazon")]
+amazon6[, lapply(.SD, mean), by = list(category, retailer_s), .SDcols = c("price", "price_amazon")]
+# dropping the observations above the 95 percentile of price variable and loading the rest amazon7
 amazon7 <- amazon6[which(amazon6$price <= quantile(amazon6$price, prob = 0.95)),]
 amazon7 <- data.table(amazon7) # creating a data.table object
-amazon7[, lapply(.SD, mean), by = category, .SDcols = c("price", "price_amazon")]
-amazon7[, lapply(.SD, mean), by = retailer_s, .SDcols = c("price", "price_amazon")]
+# amazon7[, lapply(.SD, mean), by = category, .SDcols = c("price", "price_amazon")]
+# amazon7[, lapply(.SD, mean), by = retailer_s, .SDcols = c("price", "price_amazon")]
 amazon7[, lapply(.SD, mean), by = list(category, retailer_s), .SDcols = c("price", "price_amazon")]
 
 #11. Do the same procedure as 10 in PS2_part2. What type of sampling is this?
